@@ -23,16 +23,21 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z]).{8,15}")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[#?!@$%^&*-]).{8,15}", message = "비밀번호는 특수문자,영문자,숫자를 포함하여 8~15자로 입력해주세요")
     private String password;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
     @OneToMany
     private List<Board> boards;
 
 
-    public User(String username, String password) { // 초기화
+    public User(String username, String password, UserRoleEnum role) { // 초기화
         this.username = username;
         this.password = password;
+        this.role = role;
 
     }
 

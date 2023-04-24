@@ -20,9 +20,11 @@ public class UserService {
     //Repository랑 연결필요
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;  // JwtUtill에서 @Component를 해줬기때문에 의존성주입이 가능하다.
+    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Transactional //왜 쓰지?
     public void signUp(SignupRequestDto signupRequestDto) {
+
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
 
@@ -32,8 +34,18 @@ public class UserService {
             throw new IllegalArgumentException("이미 회원이름이 존재합니다.");
         }
 
-        User user = new User(username, password); // ?
-        userRepository.save(user);
+        UserRoleEnum role = UserRoleEnum.USER;
+        if (signupRequestDto.isAdmin()) {
+            if(!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)){
+                throw new IllegalArgumentException("관리자 암호가 틀립니다.");
+            } else {
+                role = UserRoleEnum.ADMIN;
+            }
+        }
+
+        User user = new User(username, password, role); // ?
+
+        userRepository.save(user);  // DB에 회원가입정보 저장.
 
     }
     @Transactional
