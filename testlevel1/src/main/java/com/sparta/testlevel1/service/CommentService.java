@@ -1,13 +1,14 @@
 package com.sparta.testlevel1.service;
 
-
+import com.sparta.testlevel1.Exception.CustomException;
+import com.sparta.testlevel1.Exception.ErrorCode;
+import com.sparta.testlevel1.Exception.ErrorResponse;
 import com.sparta.testlevel1.dto.CommentRequestDto;
 import com.sparta.testlevel1.dto.CommentResponseDto;
 import com.sparta.testlevel1.dto.MsgResponseDto;
 import com.sparta.testlevel1.entity.Board;
 import com.sparta.testlevel1.entity.Comment;
 import com.sparta.testlevel1.entity.User;
-import com.sparta.testlevel1.entity.UserRoleEnum;
 import com.sparta.testlevel1.jwt.JwtUtil;
 import com.sparta.testlevel1.repository.BoardRepository;
 import com.sparta.testlevel1.repository.CommentRepository;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.sparta.testlevel1.Exception.ErrorCode.*;
 import static com.sparta.testlevel1.entity.UserRoleEnum.ADMIN;
 
 @Service
@@ -42,7 +44,7 @@ public class CommentService {
 
         // 게시글 유무 확인.
         Board board = boardRepository.findById(id) //***********************
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
         // 게시글 id의 댓글목록들.
 
@@ -59,7 +61,7 @@ public class CommentService {
 
         //  댓글 유무 확인.
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
 
         // 사용자가 작성한 댓글 or ADMIN 만 수정가능
@@ -78,7 +80,7 @@ public class CommentService {
 
         //  댓글 유무 확인.
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
         // 사용자가 작성한 댓글 or ADMIN 만 삭제가능
         if (comment.getUser().getUsername().equals(user.getUsername()) || user.getRole() == ADMIN ) {
@@ -99,10 +101,10 @@ public class CommentService {
             if (jwtUtil.validateToken(token)) {  // 토큰 유효 검사
                 claims = jwtUtil.getUserInfoFromToken(token);   //토큰에서 사용자 정보 가져오기
             } else {
-                throw new IllegalArgumentException("Token Error!!!!!! ");
+                throw new CustomException(INVALID_AUTH_TOKEN);
             }
             User user = userRepository.findUserByUsername(claims.getSubject())
-                    .orElseThrow(  () -> new IllegalArgumentException("존재하지 않는 회원입니다.")   );
+                    .orElseThrow(  () -> new CustomException(UNAUTHORIZED_USER));
 
             return user;
         }

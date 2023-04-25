@@ -1,5 +1,7 @@
 package com.sparta.testlevel1.service;
 
+import com.sparta.testlevel1.Exception.CustomException;
+import com.sparta.testlevel1.Exception.ErrorCode;
 import com.sparta.testlevel1.dto.LoginRequestDto;
 import com.sparta.testlevel1.dto.SignupRequestDto;
 import com.sparta.testlevel1.entity.User;
@@ -31,7 +33,7 @@ public class UserService {
         // 회원이름 중복확인필요
         Optional<User> usernamefound = userRepository.findUserByUsername(username);
         if (usernamefound.isPresent()) {
-            throw new IllegalArgumentException("이미 회원이름이 존재합니다.");
+            throw new CustomException(ErrorCode.INVALID_USER_EXISTENCE);
         }
 
         UserRoleEnum role = UserRoleEnum.USER;
@@ -55,11 +57,11 @@ public class UserService {
 
         // 사용자 있는지 확인
         User user = userRepository.findUserByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
         // 비밀번호 확인
         if (!user.getPassword().equals(password)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+            throw new CustomException(ErrorCode.INVALID_USER_PASSWORD);
         }
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
