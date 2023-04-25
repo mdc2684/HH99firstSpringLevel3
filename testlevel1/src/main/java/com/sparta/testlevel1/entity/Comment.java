@@ -5,6 +5,7 @@ import com.sparta.testlevel1.dto.BoardResponseDto;
 import com.sparta.testlevel1.dto.CommentRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.engine.internal.Cascade;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -21,7 +22,6 @@ public class Comment extends Timestamped{
     private String content;
 
     @ManyToOne
-    @JoinColumn
     private User user;
 
     @ManyToOne

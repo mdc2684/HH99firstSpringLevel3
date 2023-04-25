@@ -2,7 +2,6 @@ package com.sparta.testlevel1.Exception;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter

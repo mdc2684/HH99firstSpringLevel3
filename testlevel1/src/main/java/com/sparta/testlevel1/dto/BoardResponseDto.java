@@ -2,7 +2,9 @@ package com.sparta.testlevel1.dto;
 
 import com.sparta.testlevel1.entity.Board;
 import lombok.Getter;
+
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +21,10 @@ public class BoardResponseDto {
         this.content = board.getContent();
         this.username = board.getUser().getUsername();
         this.createdAt = board.getCreatedAt();
-        this.commentlist = board.getCommentList().stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        this.commentlist = board.getCommentList().stream().map(CommentResponseDto::new).sorted(Comparator.comparing(CommentResponseDto::getCreatedAt).reversed()).collect(Collectors.toList());
+
+        //  아래도가능.
+        //this.commentlist = board.getCommentList().stream().map(CommentResponseDto::new).sorted(Comparator.comparing(CommentResponseDto::getCreatedAt, Comparator.reverseOrder())).collect(Collectors.toList());
 
 
     }

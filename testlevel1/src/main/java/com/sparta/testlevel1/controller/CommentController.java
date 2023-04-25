@@ -22,7 +22,6 @@ public class CommentController  {
     @PostMapping("/{boardId}")
     public CommentResponseDto commentWrite(@PathVariable Long boardId, @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest request) {
         return commentService.write(boardId,commentRequestDto,request);
-
     }
 
     // 댓글 수정하기
@@ -37,6 +36,4 @@ public class CommentController  {
         commentService.delete(id,request);
         return ResponseEntity.ok(new MsgResponseDto("삭제완료!", HttpStatus.OK.value()));
     }
-
-
 }
