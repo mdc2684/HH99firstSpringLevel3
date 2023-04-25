@@ -5,6 +5,7 @@ import com.sparta.testlevel1.dto.BoardResponseDto;
 import com.sparta.testlevel1.dto.MsgResponseDto;
 import com.sparta.testlevel1.entity.Board;
 import com.sparta.testlevel1.entity.User;
+import com.sparta.testlevel1.entity.UserRoleEnum;
 import com.sparta.testlevel1.jwt.JwtUtil;
 import com.sparta.testlevel1.repository.BoardRepository;
 import com.sparta.testlevel1.repository.UserRepository;
@@ -21,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sparta.testlevel1.entity.UserRoleEnum.ADMIN;
+import static com.sparta.testlevel1.entity.UserRoleEnum.USER;
+
 // Repository 데이터베이스에 잘 연결해주면되는 역할
 
 @Service //전부 비지니스로직?을 수행하는 Bean(객체)로 등록,
@@ -31,6 +35,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+
 
     @Transactional  //?
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, HttpServletRequest request) {
@@ -66,12 +71,12 @@ public class BoardService {
     public List<BoardResponseDto> getBoardList() {
         //최근순서로하기위해 repository로가서 findAllByOrderByModifiedAtDesc()메서드만들기
         List<Board> boardList = boardRepository.findAllByOrderByCreatedAtDesc();
-        List<BoardResponseDto> boardResponseDto = new ArrayList<>();
+        List<BoardResponseDto> list = new ArrayList<>();
 
         for (Board board : boardList) {
-            boardResponseDto.add( new BoardResponseDto(board));
+            list.add( new BoardResponseDto(board));
         }
-        return boardResponseDto;
+        return list;
     }
 
     // 게시글 수정하기
@@ -100,13 +105,13 @@ public class BoardService {
                     () -> new IllegalArgumentException("게시판이 존재하지 않습니다")
             );
 
-            if (!board.getUsername().equals(claims.getSubject())) {
+            if (!board.getUser().getUsername().equals(claims.getSubject()) || user.getRole() == ADMIN) {
                 throw new IllegalArgumentException("수정 권한이 없습니다");
             }
 
             board.update(boardRequestDto);
 
-            return new BoardResponseDto(board); // throw 어케?
+            return new BoardResponseDto(board);
         } else {
             throw new NullPointerException("토큰이없습니다");
         }
@@ -135,7 +140,7 @@ public class BoardService {
                     () -> new IllegalArgumentException("게시판이 존재하지 않습니다")
             );
 
-            if (!board.getUsername().equals(claims.getSubject())) {
+            if (!board.getUser().getUsername().equals(claims.getSubject())) {
                 throw new IllegalArgumentException("삭제 권한이 없습니다");
             }
 

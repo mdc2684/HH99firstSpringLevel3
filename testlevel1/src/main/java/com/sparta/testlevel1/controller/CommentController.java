@@ -4,6 +4,8 @@ package com.sparta.testlevel1.controller;
 import com.sparta.testlevel1.dto.*;
 import com.sparta.testlevel1.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,19 +24,19 @@ public class CommentController  {
         return commentService.write(boardId,commentRequestDto,request);
 
     }
-//
-//    // 댓글 수정하기
-//    @PutMapping("/{id}")
-//    public CommentRequestDto commentUpdate(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest request) {
-//        return commentService.update(id, commentRequestDto, request);
-//    }
-//
-//    // 댓글 삭제하기
-//    @DeleteMapping("/api/board/{id}")
-//    public ResponseEntity<MsgResponseDto> deleteBoard(@PathVariable Long id, HttpServletRequest request) {
-//        commentService.deleteBoard(id,request);
-//        return ResponseEntity.ok(new MsgResponseDto("삭제완료!", HttpStatus.OK.value()));
-//    }
+
+    // 댓글 수정하기
+    @PutMapping("/{commentId}")
+    public CommentResponseDto commentUpdate(@PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest request) {
+        return commentService.update(commentId, commentRequestDto, request);
+    }
+
+    // 댓글 삭제하기
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MsgResponseDto> commentDelete(@PathVariable Long id, HttpServletRequest request) {
+        commentService.delete(id,request);
+        return ResponseEntity.ok(new MsgResponseDto("삭제완료!", HttpStatus.OK.value()));
+    }
 
 
 }

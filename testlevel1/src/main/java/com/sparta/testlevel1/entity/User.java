@@ -30,10 +30,6 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany
-    private List<Board> boards;
-
-
     public User(String username, String password, UserRoleEnum role) { // 초기화
         this.username = username;
         this.password = password;

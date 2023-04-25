@@ -21,23 +21,19 @@ public class Board extends Timestamped {   // 게시판에 대한 정보를 가�
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String username;
+    @OneToMany(mappedBy = "board")
+    private List<Comment> commentList = new ArrayList<>();
 
 
-    @ManyToOne(fetch = FetchType.EAGER)   // ManyToOne기본값 = EAGER -> 즉시로딩: 엔티티를 조회할때 연관된 엔티티도 함께 조회.  LAZY -> 연관된 엔티티를 실제 사용 할 때 조회
-    @JoinColumn(name = "USER_ID", nullable = false)  //name은 외래키의명칭  //nullable은 안 줌.
+    @ManyToOne(fetch = FetchType.LAZY)   // ManyToOne기본값 = EAGER -> 즉시로딩: 엔티티를 조회할때 연관된 엔티티도 함께 조회.  LAZY -> 연관된 엔티티를 실제 사용 할 때 조회
+    @JoinColumn(name = "USER_ID")  //name은 외래키의명칭  //nullable은 안 줌.
     private User user;
-
-    @OneToMany(mappedBy = "board",fetch = FetchType.EAGER)
-    private List<Comment> comments = new ArrayList<>();
 
 
     public Board(BoardRequestDto boardRequestDto,  User user) {
         this.title = boardRequestDto.getTitle();
         this.content = boardRequestDto.getContent();
         this.user = user;
-        this.username = user.getUsername();
     }
 
     public void update(BoardRequestDto boardRequestDto) {

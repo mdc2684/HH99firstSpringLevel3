@@ -1,16 +1,18 @@
 package com.sparta.testlevel1.entity;
 
 
+import com.sparta.testlevel1.dto.BoardResponseDto;
 import com.sparta.testlevel1.dto.CommentRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
 @NoArgsConstructor
-public class Comment {
+public class Comment extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,15 +21,22 @@ public class Comment {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
+    @JoinColumn
     private Board board;
 
-    public Comment(CommentRequestDto commentRequestDto, Board board) {
+
+    public Comment(CommentRequestDto commentRequestDto, User user, Board board) {
+        this.board = board;
+        this.user = user;
         this.content = commentRequestDto.getContent();
-        this.id = board.getId();
+    }
+
+    public void update(CommentRequestDto commentRequestDto) {
+        this.content = commentRequestDto.getContent();
     }
 }
+
