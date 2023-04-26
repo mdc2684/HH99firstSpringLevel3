@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor // 이게있어야 final 에러 사라진다 왜일까?
+@RequiredArgsConstructor
 public class UserService {
 
     //Repository랑 연결필요

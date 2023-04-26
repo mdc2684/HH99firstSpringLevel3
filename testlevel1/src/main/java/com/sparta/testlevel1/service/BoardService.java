@@ -67,7 +67,7 @@ public class BoardService {
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new CustomException(BOARD_NOT_FOUND)
         );
-
+        // 권한확인
         if (!board.getUser().getUsername().equals(user.getUsername()) || user.getRole() == ADMIN) {
             throw new CustomException(INVALID_USER);
         }
@@ -110,7 +110,7 @@ public class BoardService {
         String token = jwtUtil.resolveToken(request); // request 토큰값 찾기
         Claims claims;
 
-        // 토큰이 있는경우에만 댓글작성 가능
+        // 토큰이 있는경우에만 작성 가능
         if (token != null) {
             if (jwtUtil.validateToken(token)) {  // 토큰 유효 검사
                 claims = jwtUtil.getUserInfoFromToken(token);   //토큰에서 사용자 정보 가져오기

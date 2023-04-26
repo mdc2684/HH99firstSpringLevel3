@@ -1,8 +1,6 @@
 package com.sparta.testlevel1.service;
 
 import com.sparta.testlevel1.Exception.CustomException;
-import com.sparta.testlevel1.Exception.ErrorCode;
-import com.sparta.testlevel1.Exception.ErrorResponse;
 import com.sparta.testlevel1.dto.CommentRequestDto;
 import com.sparta.testlevel1.dto.CommentResponseDto;
 import com.sparta.testlevel1.dto.MsgResponseDto;
@@ -43,7 +41,7 @@ public class CommentService {
         User user = checkToken(request);
 
         // 게시글 유무 확인.
-        Board board = boardRepository.findById(id) //***********************
+        Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
         // 게시글 id의 댓글목록들.

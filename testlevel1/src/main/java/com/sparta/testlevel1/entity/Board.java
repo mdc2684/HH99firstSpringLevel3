@@ -21,7 +21,8 @@ public class Board extends Timestamped {   // 게시판에 대한 정보를 가�
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE) // cascade는 특정 Entity의 영속성 상태가 변경 되었을 때, 이와 연관된 Entity에도 전파 시킬지 말지 선택하는 옵션
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)  // ************* "board"는 연관관계의주인인 Comment의 필드명 board를 말하는것. Board가 아님!
+    // cascade는 특정 Entity의 영속성 상태가 변경 되었을 때, 이와 연관된 Entity에도 영속성을 전파 시킬지 말지 선택하는 옵션
     private List<Comment> commentList = new ArrayList<>();
 
 
