@@ -36,8 +36,12 @@ public class UserService {
         String username = signupRequestDto.getUsername();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
+        // 유효성검사.
         if (!isValidUsername(username)) {
             throw new CustomException(ErrorCode.INVALID_USERNAME);
+        }
+        if(!isValidPassword(signupRequestDto.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_USER_PASSWORD);
         }
 
         // 회원이름 중복확인필요
@@ -88,5 +92,9 @@ public class UserService {
     private boolean isValidUsername(String username) {
         String usernamePattern = "^[a-z0-9]{4,10}$";
         return username.matches(usernamePattern);
+    }
+    private boolean isValidPassword(String password) {
+        String passwordPattern =  "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z0-9$@$!%*?&]{8,15}$";
+        return password.matches(passwordPattern);
     }
 }
