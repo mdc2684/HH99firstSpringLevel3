@@ -1,7 +1,7 @@
 package com.sparta.testlevel1.service;
 
-import com.sparta.testlevel1.Exception.CustomException;
-import com.sparta.testlevel1.Exception.ErrorCode;
+import com.sparta.testlevel1.exception.CustomException;
+import com.sparta.testlevel1.exception.ErrorCode;
 import com.sparta.testlevel1.dto.LoginRequestDto;
 import com.sparta.testlevel1.dto.MsgResponseDto;
 import com.sparta.testlevel1.dto.SignupRequestDto;
@@ -94,7 +94,7 @@ public class UserService {
         return username.matches(usernamePattern);
     }
     private boolean isValidPassword(String password) {
-        String passwordPattern =  "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z0-9$@$!%*?&]{8,15}$";
+        String passwordPattern =  "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,15}$";
         return password.matches(passwordPattern);
     }
 }

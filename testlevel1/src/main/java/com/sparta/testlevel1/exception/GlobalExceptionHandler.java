@@ -1,4 +1,4 @@
-package com.sparta.testlevel1.Exception;
+package com.sparta.testlevel1.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

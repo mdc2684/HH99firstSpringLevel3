@@ -1,7 +1,7 @@
 package com.sparta.testlevel1.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.testlevel1.Exception.ErrorResponse;
+import com.sparta.testlevel1.exception.ErrorResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.sparta.testlevel1.Exception.ErrorCode.INVALID_AUTH_TOKEN;
+import static com.sparta.testlevel1.exception.ErrorCode.INVALID_AUTH_TOKEN;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {

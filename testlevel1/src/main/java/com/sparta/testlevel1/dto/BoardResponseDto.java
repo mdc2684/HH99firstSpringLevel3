@@ -13,6 +13,7 @@ public class BoardResponseDto {
     private String title;
     private String content;
     private String username;
+    private int liked;
     private LocalDateTime createdAt;
     private List<CommentResponseDto> commentlist;   // 순환참조?
 
@@ -20,6 +21,7 @@ public class BoardResponseDto {
         this.title = board.getTitle();
         this.content = board.getContent();
         this.username = board.getUser().getUsername();
+        this.liked = board.getLiked();
         this.createdAt = board.getCreatedAt();
         this.commentlist = board.getCommentList().stream().map(CommentResponseDto::new).sorted(Comparator.comparing(CommentResponseDto::getCreatedAt).reversed()).collect(Collectors.toList());
 

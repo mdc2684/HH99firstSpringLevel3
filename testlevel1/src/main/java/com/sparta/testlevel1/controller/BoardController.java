@@ -49,4 +49,10 @@ public class BoardController {
     public ResponseEntity<MsgResponseDto> deleteBoard(@PathVariable Long id,  @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return boardService.deleteBoard(id,userDetails.getUser());
     }
+
+    //좋아요
+    @PostMapping("/api/board/{id}")
+    public ResponseEntity<MsgResponseDto> likeBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.likeBoard(id, userDetails.getUser());
+    }
 }

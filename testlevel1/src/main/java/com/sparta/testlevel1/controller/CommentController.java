@@ -36,4 +36,10 @@ public class CommentController  {
     public ResponseEntity<MsgResponseDto> commentDelete(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.delete(id,userDetails.getUser());
     }
+
+    //좋아요
+    @PostMapping("/{id}/like")
+    public ResponseEntity<MsgResponseDto> likeComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.likeComment(id, userDetails.getUser());
+    }
 }

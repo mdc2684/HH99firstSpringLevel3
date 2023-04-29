@@ -1,12 +1,14 @@
 package com.sparta.testlevel1.service;
 
-import com.sparta.testlevel1.Exception.CustomException;
 import com.sparta.testlevel1.dto.BoardRequestDto;
 import com.sparta.testlevel1.dto.BoardResponseDto;
 import com.sparta.testlevel1.dto.MsgResponseDto;
 import com.sparta.testlevel1.entity.Board;
+import com.sparta.testlevel1.entity.Likes;
 import com.sparta.testlevel1.entity.User;
+import com.sparta.testlevel1.exception.CustomException;
 import com.sparta.testlevel1.repository.BoardRepository;
+import com.sparta.testlevel1.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sparta.testlevel1.Exception.ErrorCode.*;
 import static com.sparta.testlevel1.entity.UserRoleEnum.ADMIN;
+import static com.sparta.testlevel1.exception.ErrorCode.BOARD_NOT_FOUND;
+import static com.sparta.testlevel1.exception.ErrorCode.INVALID_USER;
 
 // Repository 데이터베이스에 잘 연결해주면되는 역할
 
@@ -27,6 +30,7 @@ public class BoardService {
 
     //데이터베이스와 연결을 해야하기 때문에 BoardRepository를 사용할수있도록 추가
     private final BoardRepository boardRepository;
+    private final LikeRepository likeRepository;
 
     //게시글 작성
     @Transactional  //?
@@ -34,6 +38,7 @@ public class BoardService {
 
          // 요청받은 DTO로 DB에 저장할 객체 만들기
         Board board = boardRepository.save(new Board(boardRequestDto, user));
+
         return new BoardResponseDto(board);
         }
 
@@ -93,6 +98,25 @@ public class BoardService {
                 () -> new CustomException(BOARD_NOT_FOUND)
         ); // (id) -> 클라에서 받아온 id  + // orelse``` 추가
         return new BoardResponseDto(board);
+    }
+
+    //게시글 좋아요
+    @Transactional
+    public ResponseEntity<MsgResponseDto> likeBoard(Long id, User user) {
+        // 게시글 존재확인.
+        Board board = boardRepository.findById(id).orElseThrow( () -> new CustomException(BOARD_NOT_FOUND));
+
+        if (likeRepository.findByUserAndBoard(user,board) == null) {
+            board.plusLiked();
+            likeRepository.save(new Likes(board,user));
+            return ResponseEntity.ok(new MsgResponseDto("좋아요!!", HttpStatus.OK.value()));
+
+        } else {
+            Likes likes =  likeRepository.findByUserAndBoard(user,board);
+            board.minusLiked();
+            likeRepository.delete(likes);
+            return ResponseEntity.ok(new MsgResponseDto("좋아요취소ㅜㅜ", HttpStatus.OK.value()));
+        }
     }
 
     ///////토큰체크/////////

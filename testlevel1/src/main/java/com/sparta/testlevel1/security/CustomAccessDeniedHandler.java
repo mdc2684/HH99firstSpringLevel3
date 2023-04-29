@@ -1,7 +1,7 @@
 package com.sparta.testlevel1.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.testlevel1.Exception.ErrorCode;
+import com.sparta.testlevel1.exception.ErrorCode;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;

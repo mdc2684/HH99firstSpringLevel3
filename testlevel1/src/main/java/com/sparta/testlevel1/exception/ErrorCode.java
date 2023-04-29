@@ -1,4 +1,4 @@
-package com.sparta.testlevel1.Exception;
+package com.sparta.testlevel1.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

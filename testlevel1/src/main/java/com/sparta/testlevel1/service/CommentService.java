@@ -1,16 +1,16 @@
 package com.sparta.testlevel1.service;
 
-import com.sparta.testlevel1.Exception.CustomException;
+import com.sparta.testlevel1.entity.Likes;
+import com.sparta.testlevel1.exception.CustomException;
 import com.sparta.testlevel1.dto.CommentRequestDto;
 import com.sparta.testlevel1.dto.CommentResponseDto;
 import com.sparta.testlevel1.dto.MsgResponseDto;
 import com.sparta.testlevel1.entity.Board;
 import com.sparta.testlevel1.entity.Comment;
 import com.sparta.testlevel1.entity.User;
-import com.sparta.testlevel1.jwt.JwtUtil;
 import com.sparta.testlevel1.repository.BoardRepository;
 import com.sparta.testlevel1.repository.CommentRepository;
-import com.sparta.testlevel1.repository.UserRepository;
+import com.sparta.testlevel1.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.sparta.testlevel1.Exception.ErrorCode.BOARD_NOT_FOUND;
-import static com.sparta.testlevel1.Exception.ErrorCode.COMMENT_NOT_FOUND;
+import static com.sparta.testlevel1.exception.ErrorCode.BOARD_NOT_FOUND;
+import static com.sparta.testlevel1.exception.ErrorCode.COMMENT_NOT_FOUND;
 import static com.sparta.testlevel1.entity.UserRoleEnum.ADMIN;
 
 @Service
@@ -27,10 +27,10 @@ import static com.sparta.testlevel1.entity.UserRoleEnum.ADMIN;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
-    private final JwtUtil jwtUtil;
+    private final LikeRepository likeRepository;
+
 
     //@Transactional
     public CommentResponseDto write(Long id, CommentRequestDto commentRequestDto, User user) {
@@ -73,6 +73,25 @@ public class CommentService {
         }
         return ResponseEntity.ok(new MsgResponseDto("삭제완료!", HttpStatus.OK.value()));
         }
+
+    //댓글 좋아요
+    @Transactional
+    public ResponseEntity<MsgResponseDto> likeComment(Long id, User user) {
+        // 게시글 존재확인.
+        Comment comment = commentRepository.findById(id).orElseThrow( () -> new CustomException(BOARD_NOT_FOUND));
+
+        if (likeRepository.findByUserAndComment(user,comment) == null) {
+            comment.plusLiked();
+            likeRepository.save(new Likes(comment,user));
+            return ResponseEntity.ok(new MsgResponseDto("좋아요!!", HttpStatus.OK.value()));
+
+        } else {
+            Likes likes =  likeRepository.findByUserAndComment(user,comment);
+            comment.minusLiked();
+            likeRepository.delete(likes);
+            return ResponseEntity.ok(new MsgResponseDto("좋아요취소ㅜㅜ", HttpStatus.OK.value()));
+        }
+    }
 
     /////////토큰체크/////////
 //    public User checkToken(HttpServletRequest request) {
