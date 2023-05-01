@@ -1,10 +1,10 @@
 package com.sparta.testlevel1.jwt;
 
 
-import com.sparta.testlevel1.dto.RefreshTokenRepository;
 import com.sparta.testlevel1.dto.TokenDto;
 import com.sparta.testlevel1.entity.RefreshToken;
 import com.sparta.testlevel1.entity.UserRoleEnum;
+import com.sparta.testlevel1.repository.RefreshTokenRepository;
 import com.sparta.testlevel1.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -38,7 +38,6 @@ public class JwtUtil {
     public static final String REFRESH_KEY = "REFRESH_KEY";
     private static final long ACCESSTOKEN_TIME = 60 * 60 * 1000L;
     private static final long REFRESHTOKEN_TIME = 7*24*60 * 60 * 1000L;
-
 
     @Value("${jwt.secret.key}")
     private String secretKey;

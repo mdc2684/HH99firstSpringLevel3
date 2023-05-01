@@ -49,14 +49,14 @@ public class WebSecurityConfig {
 
         http.authorizeRequests()
                         .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-                        .antMatchers(HttpMethod.GET,"/api/board/**").permitAll()
+                        .antMatchers("/api/board/**").permitAll()
 //                .antMatchers(
 //                        "/swagger-resources/**",
 //                        "/swagger-ui.html",
 //                        "/v2/api-docs",
 //                        "/webjars/**")
 //                .permitAll()
-                        .anyRequest().authenticated();     //  permitAll()해준 이외의 url들은 Authentication 인증 처리를 하겠다
+                        .anyRequest().authenticated();     //  permitAll()해준 이외의 url들은 Authentication 인증된 사용자한테만 허용한다.
 
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

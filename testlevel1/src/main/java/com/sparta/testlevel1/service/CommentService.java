@@ -31,7 +31,6 @@ public class CommentService {
     private final BoardRepository boardRepository;
     private final LikeRepository likeRepository;
 
-
     //@Transactional
     public CommentResponseDto write(Long id, CommentRequestDto commentRequestDto, User user) {
         // 게시글 유무 확인.
@@ -47,7 +46,6 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto update(Long id, CommentRequestDto commentRequestDto, User user) {
-
 
         //  댓글 유무 확인.
         Comment comment = commentRepository.findById(id)
@@ -76,13 +74,14 @@ public class CommentService {
 
     //댓글 좋아요
     @Transactional
-    public ResponseEntity<MsgResponseDto> likeComment(Long id, User user) {
-        // 게시글 존재확인.
-        Comment comment = commentRepository.findById(id).orElseThrow( () -> new CustomException(BOARD_NOT_FOUND));
+    public ResponseEntity<MsgResponseDto> likeComment(Long boardId, Long commentId, User user) {
+        // 댓글 존재확인.
+        Comment comment = commentRepository.findById(commentId).orElseThrow( () -> new CustomException(COMMENT_NOT_FOUND));
+        Board board = boardRepository.findById(boardId).orElseThrow(()-> new CustomException(BOARD_NOT_FOUND));
 
         if (likeRepository.findByUserAndComment(user,comment) == null) {
             comment.plusLiked();
-            likeRepository.save(new Likes(comment,user));
+            likeRepository.save(new Likes(user,board,comment));
             return ResponseEntity.ok(new MsgResponseDto("좋아요!!", HttpStatus.OK.value()));
 
         } else {

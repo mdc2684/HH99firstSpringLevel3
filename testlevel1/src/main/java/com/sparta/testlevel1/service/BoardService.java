@@ -108,7 +108,7 @@ public class BoardService {
 
         if (likeRepository.findByUserAndBoard(user,board) == null) {
             board.plusLiked();
-            likeRepository.save(new Likes(board,user));
+            likeRepository.save(new Likes(user,board));
             return ResponseEntity.ok(new MsgResponseDto("좋아요!!", HttpStatus.OK.value()));
 
         } else {

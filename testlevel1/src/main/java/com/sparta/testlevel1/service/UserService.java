@@ -7,6 +7,7 @@ import com.sparta.testlevel1.entity.UserRoleEnum;
 import com.sparta.testlevel1.exception.CustomException;
 import com.sparta.testlevel1.exception.ErrorCode;
 import com.sparta.testlevel1.jwt.JwtUtil;
+import com.sparta.testlevel1.repository.RefreshTokenRepository;
 import com.sparta.testlevel1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

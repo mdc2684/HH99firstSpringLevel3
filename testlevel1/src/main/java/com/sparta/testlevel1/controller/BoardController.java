@@ -51,8 +51,9 @@ public class BoardController {
     }
 
     //좋아요
-    @PostMapping("/api/{id}/board")
+    @PostMapping("/api/board/like/{id}")
     public ResponseEntity<MsgResponseDto> likeBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println(userDetails);
         return boardService.likeBoard(id, userDetails.getUser());
     }
 }

@@ -2,12 +2,14 @@ package com.sparta.testlevel1.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +27,14 @@ public class Likes {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    public Likes(Board board, User user) {
+    public Likes(User user,Board board)  {
         this.board = board;
         this.user = user;
     }
 
-    public Likes(Comment comment, User user) {
+    public Likes(User user, Board board, Comment comment) {
         this.comment = comment;
         this.user = user;
+        this.board = board;
     }
 }

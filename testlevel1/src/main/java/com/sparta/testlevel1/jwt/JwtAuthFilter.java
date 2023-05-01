@@ -33,6 +33,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String access_token = jwtUtil.resolveToken(request, jwtUtil.ACCESS_KEY);
         String refresh_token = jwtUtil.resolveToken(request, jwtUtil.REFRESH_KEY);
 
+//        if(access_token == null) {
+//            jwtExceptionHandler(response,"토큰이 없습니다", 400);
+//        }
+
         if(access_token != null) {  // token null인지
             if(jwtUtil.validateToken(access_token)){  // 액세스토큰 유효성검사
                 setAuthentication(jwtUtil.getUserInfoFromToken(access_token));
