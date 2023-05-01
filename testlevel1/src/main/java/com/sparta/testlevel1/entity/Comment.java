@@ -29,7 +29,6 @@ public class Comment extends Timestamped{
     @ColumnDefault("0")
     private int liked;
 
-
     public Comment(CommentRequestDto commentRequestDto, User user, Board board) {
         this.board = board;
         this.user = user;
@@ -41,7 +40,6 @@ public class Comment extends Timestamped{
     public void minusLiked() {
         liked -= 1;
     }
-
 
     public void update(CommentRequestDto commentRequestDto) {
         this.content = commentRequestDto.getContent();

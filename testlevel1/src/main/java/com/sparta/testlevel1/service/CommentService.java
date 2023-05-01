@@ -93,7 +93,7 @@ public class CommentService {
         }
     }
 
-    /////////토큰체크/////////
+    /////////토큰체크///////// security적용으로 필요없어짐.
 //    public User checkToken(HttpServletRequest request) {
 //        // Request에서 Token 가져오기
 //        String token = jwtUtil.resolveToken(request); // request 토큰값 찾기

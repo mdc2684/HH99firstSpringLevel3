@@ -1,12 +1,11 @@
 package com.sparta.testlevel1.service;
 
-import com.sparta.testlevel1.exception.CustomException;
-import com.sparta.testlevel1.exception.ErrorCode;
-import com.sparta.testlevel1.dto.LoginRequestDto;
-import com.sparta.testlevel1.dto.MsgResponseDto;
-import com.sparta.testlevel1.dto.SignupRequestDto;
+import com.sparta.testlevel1.dto.*;
+import com.sparta.testlevel1.entity.RefreshToken;
 import com.sparta.testlevel1.entity.User;
 import com.sparta.testlevel1.entity.UserRoleEnum;
+import com.sparta.testlevel1.exception.CustomException;
+import com.sparta.testlevel1.exception.ErrorCode;
 import com.sparta.testlevel1.jwt.JwtUtil;
 import com.sparta.testlevel1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;  // JwtUtill에서 @Component를 해줬기때문에 의존성주입이 가능하다.
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -81,14 +81,31 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_USER_PASSWORD);
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
+        TokenDto tokenDto = jwtUtil.createAllToken(username, user.getRole());
+
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUsername(username);
+
+        if (refreshToken.isPresent()) {
+            refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+        } else {
+            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), username);
+            refreshTokenRepository.save(newToken);
+        }
+
+        setHeader(response, tokenDto);
 
         return ResponseEntity.ok(new MsgResponseDto("로그인완료", HttpStatus.OK.value()));
 
         //response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user));  // ****
         //addHeader 헤더에 넣어줄수있음.  createToken 토큰만들건데 User user를 가져왔기때문에 이름과 권한을 넣어줄수있음.
-
     }
+
+    private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
+        response.addHeader(jwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
+        response.addHeader(jwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
+    }
+
+
     private boolean isValidUsername(String username) {
         String usernamePattern = "^[a-z0-9]{4,10}$";
         return username.matches(usernamePattern);
