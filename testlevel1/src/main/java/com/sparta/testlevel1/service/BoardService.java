@@ -4,11 +4,10 @@ import com.sparta.testlevel1.dto.BoardRequestDto;
 import com.sparta.testlevel1.dto.BoardResponseDto;
 import com.sparta.testlevel1.dto.MsgResponseDto;
 import com.sparta.testlevel1.entity.Board;
-import com.sparta.testlevel1.entity.Likes;
 import com.sparta.testlevel1.entity.User;
 import com.sparta.testlevel1.exception.CustomException;
 import com.sparta.testlevel1.repository.BoardRepository;
-import com.sparta.testlevel1.repository.LikeRepository;
+import com.sparta.testlevel1.repository.CommentLikesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public class BoardService {
 
     //데이터베이스와 연결을 해야하기 때문에 BoardRepository를 사용할수있도록 추가
     private final BoardRepository boardRepository;
-    private final LikeRepository likeRepository;
+    private final CommentLikesRepository commentLikesRepository;
 
     //게시글 작성
     @Transactional  //?
@@ -100,24 +99,7 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
-    //게시글 좋아요
-    @Transactional
-    public ResponseEntity<MsgResponseDto> likeBoard(Long id, User user) {
-        // 게시글 존재확인.
-        Board board = boardRepository.findById(id).orElseThrow( () -> new CustomException(BOARD_NOT_FOUND));
 
-        if (likeRepository.findByUserAndBoard(user,board) == null) {
-            board.plusLiked();
-            likeRepository.save(new Likes(user,board));
-            return ResponseEntity.ok(new MsgResponseDto("좋아요!!", HttpStatus.OK.value()));
-
-        } else {
-            Likes likes =  likeRepository.findByUserAndBoard(user,board);
-            board.minusLiked();
-            likeRepository.delete(likes);
-            return ResponseEntity.ok(new MsgResponseDto("좋아요취소ㅜㅜ", HttpStatus.OK.value()));
-        }
-    }
 
     ///////토큰체크/////////
 //    public User checkToken(HttpServletRequest request) {

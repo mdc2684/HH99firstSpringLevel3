@@ -1,6 +1,5 @@
 package com.sparta.testlevel1.service;
 
-import com.sparta.testlevel1.entity.Likes;
 import com.sparta.testlevel1.exception.CustomException;
 import com.sparta.testlevel1.dto.CommentRequestDto;
 import com.sparta.testlevel1.dto.CommentResponseDto;
@@ -10,7 +9,7 @@ import com.sparta.testlevel1.entity.Comment;
 import com.sparta.testlevel1.entity.User;
 import com.sparta.testlevel1.repository.BoardRepository;
 import com.sparta.testlevel1.repository.CommentRepository;
-import com.sparta.testlevel1.repository.LikeRepository;
+import com.sparta.testlevel1.repository.CommentLikesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
-    private final LikeRepository likeRepository;
+    private final CommentLikesRepository commentLikesRepository;
 
     //@Transactional
     public CommentResponseDto write(Long id, CommentRequestDto commentRequestDto, User user) {
@@ -72,24 +71,7 @@ public class CommentService {
         return ResponseEntity.ok(new MsgResponseDto("삭제완료!", HttpStatus.OK.value()));
         }
 
-    //댓글 좋아요
-    @Transactional
-    public ResponseEntity<MsgResponseDto> likeComment(Long boardId, Long commentId, User user) {
-        // 댓글 존재확인.
-        Comment comment = commentRepository.findById(commentId).orElseThrow( () -> new CustomException(COMMENT_NOT_FOUND));
-        Board board = boardRepository.findById(boardId).orElseThrow(()-> new CustomException(BOARD_NOT_FOUND));
 
-        if (likeRepository.findByUserAndComment(user,comment) == null) {
-            comment.plusLiked();
-            likeRepository.save(new Likes(user,board,comment));
-            return ResponseEntity.ok(new MsgResponseDto("좋아요!!", HttpStatus.OK.value()));
-
-        } else {
-            Likes likes =  likeRepository.findByUserAndComment(user,comment);
-            comment.minusLiked();
-            likeRepository.delete(likes);
-            return ResponseEntity.ok(new MsgResponseDto("좋아요취소ㅜㅜ", HttpStatus.OK.value()));
-        }
     }
 
     /////////토큰체크///////// security적용으로 필요없어짐.
@@ -112,4 +94,4 @@ public class CommentService {
 //        }
 //        return null;
 //    }
-}
+

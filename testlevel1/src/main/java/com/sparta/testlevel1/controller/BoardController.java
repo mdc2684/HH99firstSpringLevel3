@@ -50,10 +50,5 @@ public class BoardController {
         return boardService.deleteBoard(id,userDetails.getUser());
     }
 
-    //좋아요
-    @PostMapping("/api/board/like/{id}")
-    public ResponseEntity<MsgResponseDto> likeBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        System.out.println(userDetails);
-        return boardService.likeBoard(id, userDetails.getUser());
-    }
+
 }

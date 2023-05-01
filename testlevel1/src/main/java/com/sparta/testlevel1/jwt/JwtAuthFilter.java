@@ -52,7 +52,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 jwtExceptionHandler(response, "Access Token Expired", HttpStatus.OK.value());
            } else {
                 jwtExceptionHandler(response, "Refresh Token Expired", HttpStatus.OK.value());
-                return;
            }
 
         }
@@ -74,7 +73,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
         try {
             String json = new ObjectMapper().writeValueAsString(new SecurityExceptionDto(statusCode, msg));
-            response.getWriter().write(json);
+            //response.getWriter().write(json);
         } catch (Exception e) {
             log.error(e.getMessage());
         }

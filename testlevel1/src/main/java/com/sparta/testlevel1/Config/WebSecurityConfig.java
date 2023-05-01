@@ -49,7 +49,7 @@ public class WebSecurityConfig {
 
         http.authorizeRequests()
                         .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-                        .antMatchers("/api/board/**").permitAll()
+                        .antMatchers(HttpMethod.GET,"/api/board/**").permitAll()
 //                .antMatchers(
 //                        "/swagger-resources/**",
 //                        "/swagger-ui.html",
