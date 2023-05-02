@@ -7,14 +7,13 @@ import com.sparta.testlevel1.entity.Board;
 import com.sparta.testlevel1.entity.User;
 import com.sparta.testlevel1.exception.CustomException;
 import com.sparta.testlevel1.repository.BoardRepository;
-import com.sparta.testlevel1.repository.CommentLikesRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.sparta.testlevel1.entity.UserRoleEnum.ADMIN;
@@ -29,7 +28,6 @@ public class BoardService {
 
     //데이터베이스와 연결을 해야하기 때문에 BoardRepository를 사용할수있도록 추가
     private final BoardRepository boardRepository;
-    private final CommentLikesRepository commentLikesRepository;
 
     //게시글 작성
     @Transactional  //?
@@ -43,15 +41,13 @@ public class BoardService {
 
     //게시글 전체 조회
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> getBoardList() {
+    public List<BoardResponseDto> getBoardList(Pageable pageable) {
         //최근순서로하기위해 repository로가서 findAllByOrderByModifiedAtDesc()메서드만들기
-        List<Board> boardList = boardRepository.findAllByOrderByCreatedAtDesc();
-        List<BoardResponseDto> list = new ArrayList<>();
-
-        for (Board board : boardList) {
-            list.add( new BoardResponseDto(board));
+        List <BoardResponseDto> boards = boardRepository.findAll(pageable).stream().map(BoardResponseDto::new).toList();;
+        if (boards.isEmpty()) {
+            throw new CustomException(BOARD_NOT_FOUND);
         }
-        return list;
+        return boards;
     }
 
     // 게시글 수정하기

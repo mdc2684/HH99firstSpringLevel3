@@ -28,6 +28,7 @@ public class WebSecurityConfig {
     // 비밀번호 암호화기능 등록
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 

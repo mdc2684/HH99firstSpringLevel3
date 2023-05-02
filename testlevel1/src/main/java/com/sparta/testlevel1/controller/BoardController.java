@@ -7,6 +7,9 @@ import com.sparta.testlevel1.dto.MsgResponseDto;
 import com.sparta.testlevel1.security.UserDetailsImpl;
 import com.sparta.testlevel1.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +30,10 @@ public class BoardController {
 
     //모든 게시글 조회하기
     @GetMapping("/api/board")
-    public List<BoardResponseDto> getBoard() { // request안에 들어있는 Token값을 가져와야하기때문에
-        return boardService.getBoardList();
+    public List<BoardResponseDto> getBoard(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        // request안에 들어있는 Token값을 가져와야하기때문에
+        return boardService.getBoardList(pageable);
     }
 
     //// 선택 게시글 조회하기
@@ -49,6 +54,4 @@ public class BoardController {
     public ResponseEntity<MsgResponseDto> deleteBoard(@PathVariable Long id,  @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return boardService.deleteBoard(id,userDetails.getUser());
     }
-
-
 }
