@@ -97,7 +97,7 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public List<BoardResponseDto> search(String keyword) {
-        return boardRepository.findByTitleContaining(keyword).stream().map(BoardResponseDto::new).toList();
+        return boardRepository.findByTitleContainingOrderByCreatedAtDesc(keyword).stream().map(BoardResponseDto::new).toList();
     }
 
 

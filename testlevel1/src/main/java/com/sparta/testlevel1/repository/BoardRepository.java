@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository //안해도 내부적으로 bean으로 등록 해준다함
 public interface BoardRepository extends JpaRepository<Board, Long> {  // < 연결하려고하는테이블(클래스) , Id타입 >
-    List<Board> findByTitleContaining(String keyword);
+    List<Board> findByTitleContainingOrderByCreatedAtDesc(String keyword);
     Page<Board> findAll(Pageable pageable);
 
     //List<Board> findAllByOrderByModifiedAtDesc();  // 쿼리메소드 ,  수정날짜기준내림차순
