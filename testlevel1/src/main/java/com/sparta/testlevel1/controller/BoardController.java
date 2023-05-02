@@ -51,7 +51,14 @@ public class BoardController {
 
     //삭제하기
     @DeleteMapping("/api/board/{id}")
-    public ResponseEntity<MsgResponseDto> deleteBoard(@PathVariable Long id,  @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return boardService.deleteBoard(id,userDetails.getUser());
+    public ResponseEntity<MsgResponseDto> deleteBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.deleteBoard(id, userDetails.getUser());
+    }
+
+    //게시글 제목으로 검색하기
+    @GetMapping("/api/board/search")
+    public ResponseEntity<List<BoardResponseDto>> search(@RequestParam("keyword") String keyword) {
+        List<BoardResponseDto> boards = boardService.search(keyword);
+        return ResponseEntity.ok(boards);
     }
 }

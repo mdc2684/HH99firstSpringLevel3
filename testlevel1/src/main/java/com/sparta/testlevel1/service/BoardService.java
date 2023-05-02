@@ -51,7 +51,7 @@ public class BoardService {
     }
 
     // 게시글 수정하기
-    @Transactional
+    @Transactional(readOnly = true)
     public BoardResponseDto update(Long id, BoardRequestDto boardRequestDto, User user) {
 
         // 수정할 데이터가 존재하는지 확인하는 과정 먼저 필요
@@ -69,7 +69,7 @@ public class BoardService {
         }
 
     //게시글삭제하기
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<MsgResponseDto> deleteBoard(Long id, User user) {
 
         // 삭제할 데이터가 존재하는지 확인하는 과정 먼저 필요
@@ -87,12 +87,17 @@ public class BoardService {
        }
 
     // 게시글 하나만 조회하기
-    @Transactional
+    @Transactional(readOnly = true)
     public BoardResponseDto getBoardone(Long id) {
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new CustomException(BOARD_NOT_FOUND)
         ); // (id) -> 클라에서 받아온 id  + // orelse``` 추가
         return new BoardResponseDto(board);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BoardResponseDto> search(String keyword) {
+        return boardRepository.findByTitleContaining(keyword).stream().map(BoardResponseDto::new).toList();
     }
 
 
